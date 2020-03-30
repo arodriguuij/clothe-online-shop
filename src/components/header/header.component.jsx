@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import "./header.styles.scss";
 import { logOut } from "../../redux/user/user.actions";
+import CartIcon from "../cart-icon/cart-icon.component";
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 
-const Header = (props) => {
+const Header = props => {
   return (
     <div className="header">
       <Link className="logo-container" to="/">
@@ -27,13 +29,16 @@ const Header = (props) => {
             SIGN IN
           </Link>
         )}
+        <CartIcon />
       </div>
+      {props.isHidden ? null : <CartDropdown />}
     </div>
   );
 };
 
-const mapStateToProps = state => ({
-  loggedUser: state.user.userId !== null
+const mapStateToProps = ({user, cart}) => ({
+  loggedUser: user.userId !== null,
+  isHidden: cart.hidden
 });
 
 const mapDispatchToProps = dispatch => ({
