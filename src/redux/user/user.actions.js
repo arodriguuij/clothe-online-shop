@@ -1,5 +1,7 @@
+import {UserActionTypes} from './user.types';
+
 export const setCurrentUser = user => ({
-  type: "SET_CURRENT_USER",
+  type: UserActionTypes.SET_CURRENT_USER,
   payload: user
 });
 
@@ -21,7 +23,7 @@ export const auth = response => {
   localStorage.setItem("userId", response.data.localId);
 
   return {
-    type: "AUTH_SUCCESS",
+    type: UserActionTypes.AUTH_SUCCESS,
     payload: {
       token: response.data.token,
       userId: response.data.localId
@@ -36,14 +38,14 @@ export const tryLogin = () => {
     localStorage.removeItem("expiartionDate");
     localStorage.removeItem("userId");
     return {
-      type: "LOG_OUT"
+      type: UserActionTypes.LOG_OUT
     };
   } else {
     const expirationTime = new Date(localStorage.getItem("expiartionDate"));
     if (expirationTime > new Date()) {
       const userId = localStorage.getItem("userId");
       return {
-        type: "AUTH_SUCCESS",
+        type: UserActionTypes.AUTH_SUCCESS,
         payload: {
           token: token,
           userId: userId
@@ -54,7 +56,7 @@ export const tryLogin = () => {
       localStorage.removeItem("expiartionDate");
       localStorage.removeItem("userId");
       return {
-        type: "LOG_OUT"
+        type: UserActionTypes.LOG_OUT
       };
     }
   }

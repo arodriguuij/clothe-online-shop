@@ -26,8 +26,8 @@ class SignIn extends React.Component {
         "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4",
         authData
       );
-      this.props.onAuth(response);
       this.setState({ email: "", password: "" });
+      this.props.onAuth(response);
     } catch (error) {
       console.log("Error", error.message);
     }

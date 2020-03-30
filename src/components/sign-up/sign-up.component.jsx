@@ -34,14 +34,13 @@ class SignUp extends React.Component {
         "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4",
         authData
       );
-      this.props.onSetCurrentUser(response);
       this.setState({
         name: "",
         email: "",
         password: "",
         confirmPassword: ""
       });
-      console.log(response);
+      this.props.onSetCurrentUser(response);
     } catch (error) {
       console.error(error);
     }

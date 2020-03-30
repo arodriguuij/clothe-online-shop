@@ -1,5 +1,7 @@
+import { UserActionTypes } from "./user.types";
+
 const initialState = {
-    token: null,
+  token: null,
   userId: null
 };
 
@@ -10,13 +12,13 @@ const userReducer = (state = initialState, action) => {
         ...state,
         currentUser: action.payload
       }; */
-    case "LOG_OUT":
+    case UserActionTypes.LOG_OUT:
       return {
         ...state,
         token: null,
         userId: null
       };
-    case "AUTH_SUCCESS":
+    case UserActionTypes.AUTH_SUCCESS:
       return {
         ...state,
         token: action.payload.token,
