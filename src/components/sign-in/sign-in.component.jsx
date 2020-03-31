@@ -3,7 +3,7 @@ import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 import "./sign-in.styles.scss";
 import axios from "axios";
-import { auth } from "../../redux/user/user.actions";
+import { logIn } from "../../redux/user/user.actions";
 import { connect } from "react-redux";
 
 class SignIn extends React.Component {
@@ -17,8 +17,7 @@ class SignIn extends React.Component {
     console.log(this.state);
     const authData = {
       email: this.state.email,
-      password: this.state.password,
-      returnSecureToken: true
+      password: this.state.password
     };
 
     try {
@@ -27,9 +26,13 @@ class SignIn extends React.Component {
         authData
       );
       this.setState({ email: "", password: "" });
-      this.props.onAuth(response);
+      const user = {
+        email: response.data.email
+      }
+
+      this.props.onLogIn(user);
     } catch (error) {
-      console.log("Error", error.message);
+      console.error("What a mistake has appear here :o", error);
     }
   };
 
@@ -72,7 +75,7 @@ class SignIn extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: response => dispatch(auth(response))
+    onLogIn: user => dispatch(logIn(user))
   };
 };
 export default connect(null, mapDispatchToProps)(SignIn);

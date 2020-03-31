@@ -4,7 +4,7 @@ import CustomButton from "../custom-button/custom-button.component";
 import "./sign-up.styles.scss";
 import axios from "axios";
 import { connect } from "react-redux";
-import { setCurrentUser } from "../../redux/user/user.actions";
+import { logIn } from "../../redux/user/user.actions";
 
 class SignUp extends React.Component {
   state = {
@@ -25,8 +25,7 @@ class SignUp extends React.Component {
 
     const authData = {
       email: this.state.email,
-      password: this.state.password,
-      returnSecureToken: true
+      password: this.state.confirmPassword
     };
 
     try {
@@ -40,9 +39,13 @@ class SignUp extends React.Component {
         password: "",
         confirmPassword: ""
       });
-      this.props.onSetCurrentUser(response);
+
+      const user = {
+        email: response.data.email
+      }
+      this.props.onLogIn(user);
     } catch (error) {
-      console.error(error);
+      console.error("What a mistake has appear here :o", error);
     }
   };
 
@@ -98,6 +101,6 @@ class SignUp extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  onSetCurrentUser: response => dispatch(setCurrentUser(response))
+  onLogIn: user => dispatch(logIn(user))
 });
 export default connect(null, mapDispatchToProps)(SignUp);

@@ -6,9 +6,9 @@ import "./header.styles.scss";
 import { logOut } from "../../redux/user/user.actions";
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
-import { selectUserId } from "../../redux/user/user.selectors";
-import {selectHidden} from '../../redux/cart/cart.selectors';
-import {createStructuredSelector} from 'reselect';
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+import { selectHidden } from "../../redux/cart/cart.selectors";
+import { createStructuredSelector } from "reselect";
 
 const Header = props => {
   return (
@@ -39,13 +39,8 @@ const Header = props => {
   );
 };
 
-/* const mapStateToProps = state => ({
-  loggedUser: selectUserId(state),
-  isHidden: selectHidden(state)
-}); */
-// Same
-const mapStateToProps = createStructuredSelector ({
-  loggedUser: selectUserId,
+const mapStateToProps = createStructuredSelector({
+  loggedUser: selectCurrentUser,
   isHidden: selectHidden
 });
 
