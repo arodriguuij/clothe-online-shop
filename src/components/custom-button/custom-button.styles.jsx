@@ -1,6 +1,9 @@
 import styled, { css } from "styled-components";
 
 const buttonStyles = css`
+  @media screen and (max-width: 800px) {
+    margin: 0 auto;
+  }
   background-color: black;
   color: white;
   border: none;

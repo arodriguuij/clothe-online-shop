@@ -7,13 +7,12 @@ import ShopPage from "./pages/shop/ShopPage.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import Header from "./components/header/header.component";
 import CheckoutPage from "./pages/checkout/checkoutPage.component";
-import "./App.css";
+import { GlobalStyle } from "./global.styles";
 
 const App = props => {
-
-
   return (
     <div>
+      <GlobalStyle />
       <Header />
       <Switch>
         <Route exact path="/" component={HomePage} />
@@ -36,6 +35,5 @@ const mapStateToProps = state => {
     logedUser: selectCurrentUser(state) !== null
   };
 };
-
 
 export default connect(mapStateToProps)(App);
