@@ -1,81 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 import "./sign-in.styles.scss";
-import axios from "axios";
-import { logIn } from "../../redux/user/user.actions";
+import { fetchLoginStartAsyn } from "../../redux/user/user.actions";
 import { connect } from "react-redux";
+import { selectError } from "../../redux/user/user.selectors";
+import { createStructuredSelector } from "reselect";
 
-class SignIn extends React.Component {
-  state = {
-    email: "",
-    password: ""
-  };
+const SignIn = props => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  handleSubmit = async event => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    console.log(this.state);
     const authData = {
-      email: this.state.email,
-      password: this.state.password
+      email,
+      password
     };
 
-    try {
-      const response = await axios.post(
-        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4",
-        authData
-      );
-      this.setState({ email: "", password: "" });
-      const user = {
-        email: response.data.email
-      }
+    setEmail("");
+    setPassword("");
 
-      this.props.onLogIn(user);
-    } catch (error) {
-      console.error("What a mistake has appear here :o", error);
-    }
-  };
-
-  handleChange = event => {
-    const { value, name } = event.target;
-    this.setState({ [name]: value });
-  };
-
-  render() {
-    return (
-      <div className="sign-in">
-        <h2>I already have an account</h2>
-        <span>Sign in with your email and password</span>
-
-        <form onSubmit={this.handleSubmit}>
-          <FormInput
-            name="email"
-            type="email"
-            handleChange={this.handleChange}
-            value={this.state.email}
-            label="email"
-            required
-          />
-          <FormInput
-            name="password"
-            type="password"
-            value={this.state.password}
-            handleChange={this.handleChange}
-            label="password"
-            required
-          />
-          <div className="buttons">
-            <CustomButton type="submit"> Sign in </CustomButton>
-          </div>
-        </form>
-      </div>
+    props.onFetchLoginStartAsyn(
+      authData,
+      "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4"
     );
-  }
-}
+  };
+
+  const handleChange = event => {
+    const { value, name } = event.target;
+    if (name === "email") setEmail(value);
+    else if (name === "password") setPassword(value);
+  };
+
+  return (
+    <div className="sign-in">
+      <h2>I already have an account</h2>
+      <span>Sign in with your email and password</span>
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          name="email"
+          type="email"
+          handleChange={handleChange}
+          value={email}
+          label="email"
+          required
+        />
+        <FormInput
+          name="password"
+          type="password"
+          value={password}
+          handleChange={handleChange}
+          label="password"
+          required
+        />
+        <div className="buttons">
+          <CustomButton type="submit"> Sign in </CustomButton>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const mapStateToProps = createStructuredSelector({
+  error: selectError
+});
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLogIn: user => dispatch(logIn(user))
+    onFetchLoginStartAsyn: (user, url) =>
+      dispatch(fetchLoginStartAsyn(user, url))
   };
 };
-export default connect(null, mapDispatchToProps)(SignIn);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

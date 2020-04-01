@@ -1,106 +1,110 @@
-import React from "react";
+import React, { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 import "./sign-up.styles.scss";
-import axios from "axios";
 import { connect } from "react-redux";
-import { logIn } from "../../redux/user/user.actions";
+import { fetchLoginStartAsyn } from "../../redux/user/user.actions";
+import { createStructuredSelector } from "reselect";
+import { selectError } from "../../redux/user/user.selectors";
 
-class SignUp extends React.Component {
-  state = {
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  };
+const SignUp = props => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  handleSubmit = async event => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    console.log(this.state);
 
-    if (this.state.password !== this.state.confirmPassword) {
+    if (password !== confirmPassword) {
       alert("passwords don't match");
       return;
     }
 
     const authData = {
-      email: this.state.email,
-      password: this.state.confirmPassword
+      email,
+      password
     };
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
 
-    try {
-      const response = await axios.post(
-        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4",
-        authData
-      );
-      this.setState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      });
+    props.onFetchLoginStartAsyn(
+      authData,
+      "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDvdT8-U7bEUHVVz5NjWs4LG8LfR4vjfp4"
+    );
+  };
 
-      const user = {
-        email: response.data.email
-      }
-      this.props.onLogIn(user);
-    } catch (error) {
-      console.error("What a mistake has appear here :o", error);
+  const handleChange = event => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "name":
+        setName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "confirmPassword":
+        setConfirmPassword(value);
+        break;
+      default:
+        break;
     }
   };
 
-  handleChange = event => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
+  return (
+    <div className="sign-up">
+      <h2 className="title">I do not have a account</h2>
+      <span>Sign up with your email and password</span>
+      <form className="sign-up-form" onSubmit={handleSubmit}>
+        <FormInput
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          label="Name"
+          required
+        />
+        <FormInput
+          type="email"
+          name="email"
+          value={email}
+          onChange={handleChange}
+          label="Email"
+          required
+        />
+        <FormInput
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleChange}
+          label="Password"
+          required
+        />
+        <FormInput
+          type="password"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={handleChange}
+          label="Confirm Password"
+          required
+        />
+        <CustomButton type="submit">SIGN UP</CustomButton>
+      </form>
+    </div>
+  );
+};
 
-  render() {
-    const { name, email, password, confirmPassword } = this.state;
-    return (
-      <div className="sign-up">
-        <h2 className="title">I do not have a account</h2>
-        <span>Sign up with your email and password</span>
-        <form className="sign-up-form" onSubmit={this.handleSubmit}>
-          <FormInput
-            type="text"
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-            label="Name"
-            required
-          />
-          <FormInput
-            type="email"
-            name="email"
-            value={email}
-            onChange={this.handleChange}
-            label="Email"
-            required
-          />
-          <FormInput
-            type="password"
-            name="password"
-            value={password}
-            onChange={this.handleChange}
-            label="Password"
-            required
-          />
-          <FormInput
-            type="password"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={this.handleChange}
-            label="Confirm Password"
-            required
-          />
-          <CustomButton type="submit">SIGN UP</CustomButton>
-        </form>
-      </div>
-    );
-  }
-}
+const mapStateToProps = createStructuredSelector({
+  error: selectError
+});
 
 const mapDispatchToProps = dispatch => ({
-  onLogIn: user => dispatch(logIn(user))
+  onFetchLoginStartAsyn: (user, url) => dispatch(fetchLoginStartAsyn(user, url))
 });
-export default connect(null, mapDispatchToProps)(SignUp);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
